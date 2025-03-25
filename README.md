@@ -1,9 +1,11 @@
 # SQL-Database-Manager
 
-Overview
+Overview:
+
 SQL Database Manager is a modern web application for visualizing and managing SQL database tables through an intuitive UI. It allows users to browse table contents and add new records with a sleek and responsive design.
 
-Features
+Features:
+
 Interactive Dashboard – Clean and easy-to-use interface
 
 Table Viewing – Browse database tables with formatted display
@@ -16,7 +18,7 @@ Responsive Design – Works on desktop and mobile
 
 Premium Aesthetics – Smooth animations and custom styling
 
-Technology Stack
+Technology Stack:
 Frontend: HTML5, CSS3, JavaScript
 
 UI Components: Custom-built with CSS animations
