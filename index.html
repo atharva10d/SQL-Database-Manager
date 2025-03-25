@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Database Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body data-theme="light">
+    <header>
+        <h1>SQL Database Manager</h1>
+        <button id="darkModeToggle" aria-label="Toggle Dark Mode">
+            <svg id="sunIcon" class="sun-moon-icon" viewBox="0 0 24 24">
+                <path d="M12 17.75c-3.17 0-5.75-2.58-5.75-5.75s2.58-5.75 5.75-5.75 5.75 2.58 5.75 5.75-2.58 5.75-5.75 5.75zm0-10.5c-2.62 0-4.75 2.13-4.75 4.75s2.13 4.75 4.75 4.75 4.75-2.13 4.75-4.75-2.13-4.75-4.75-4.75zM12 1.5v2c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-2c0-.41.34-.75.75-.75s.75.34.75.75zm0 19v2c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-2c0-.41.34-.75.75-.75s.75.34.75.75zM21.3 9.9l-1.4 1.4c-.28.28-.28.74 0 1.02.28.28.74.28 1.02 0l1.4-1.4c.28-.28.28-.74 0-1.02-.28-.28-.74-.28-1.02 0zm-16.6 0l-1.4 1.4c-.28.28-.28.74 0 1.02.28.28.74.28 1.02 0l1.4-1.4c.28-.28.28-.74 0-1.02-.28-.28-.74-.28-1.02 0zm9.9-9.7l1.4 1.4c.28.28.74.28 1.02 0 .28-.28.28-.74 0-1.02l-1.4-1.4c-.28-.28-.74-.28-.1.02 0-.28.28.74 0 1.02zm-6.6 16.4l1.4 1.4c.28.28.74.28 1.02 0 .28-.28.28-.74 0-1.02l-1.4-1.4c-.28-.28-.74-.28-.1.02 0-.28.28.74 0 1.02z"/>
+            </svg>
+            <svg id="moonIcon" class="sun-moon-icon" viewBox="0 0 24 24">
+                <path d="M12 2a8.1 8.1 0 0 0-8 8.1c0 5.5 4.5 9.9 10 9.9 4.3 0 7.9-3 9.3-7.4-1.7 1-3.7 1.6-5.9 1.6-4.4 0-8-3.6-8-8 0-2.2 1.2-4.2 3-5.5.7.1 1.4.3 2.1.5z"/>
+            </svg>
+        </button>
+    </header>
+
+    <main>
+        <section id="landingSection">
+            <h2>Welcome to your SQL Database Manager!</h2>
+            <p class="tagline">Effortlessly manage your database with a user-friendly interface.</p>
+            <div class="options-container">
+                <div id="addValuesBox" class="option-box">
+                    <i class="fas fa-plus-circle option-icon"></i>
+                    <h3>Add New Values</h3>
+                    <p>Insert data into your tables.</p>
+                </div>
+                <div id="viewTableBox" class="option-box">
+                    <i class="fas fa-table option-icon"></i>
+                    <h3>View Table</h3>
+                    <p>Explore your database tables.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tableListSection" class="dynamic-section" style="display: none;">
+            <button id="backToLandingFromTableList" class="back-button"><i class="fas fa-arrow-left"></i> Back to Home</button>
+            <h2>Select Table to Add Values</h2>
+            <div class="select-wrapper">
+                <select id="tableListDropdownForAddValue">
+                    <option value="">Select a table</option>
+                </select>
+            </div>
+            <button id="submitTableListForAddValue" class="submit-button">Submit</button>
+
+            <div id="addValueFormSection" style="display: none;">
+                <button id="backToTableList" class="back-button"><i class="fas fa-arrow-left"></i> Back to Table List</button>
+                <h3 id="addValueFormTitle">Add Values to Table: </h3>
+                <form id="addValueForm"></form>
+                <div id="addValueStatus"></div>
+                <button type="submit" form="addValueForm" class="submit-button">Add Value</button>
+                <button id="backToAddTableList" class="back-button" style="display:none;"><i class="fas fa-arrow-left"></i> Back to Table List</button>
+            </div>
+        </section>
+
+        <section id="viewTableSection" class="dynamic-section" style="display: none;">
+            <button id="backToLandingFromViewTable" class="back-button"><i class="fas fa-arrow-left"></i> Back to Home</button>
+            <h2>Select Table to View</h2>
+            <div class="select-wrapper">
+                <select id="tableDropdown">
+                    <option value="">Select a table to view</option>
+                </select>
+            </div>
+            <button id="submitTableView" class="submit-button">Submit</button>
+            <div id="tableViewSection" class="table-section" style="display: none;">
+                <button id="backToTableSelect" class="back-button"><i class="fas fa-arrow-left"></i> Back to Table Select</button>
+                <h3 id="tableViewTitle">Table: </h3>
+                <div id="tableView">
+                     <button id="backToViewTableSelect" class="back-button" style="display:none;"><i class="fas fa-arrow-left"></i> Back to Table Select</button>
+
+                     <!-- Pre-rendered Tables - Initially Hidden -->
+                     <div id="AdminTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Admin_ID</th><th>First_Name</th><th>Middle_Name</th><th>Last_Name</th><th>Team_Size</th><th>Admin_Role</th><th>Salary</th></tr></thead>
+                             <tbody>
+                                 <tr><td>ADM001</td><td>Adwait</td><td>A.</td><td>Kamble</td><td>10</td><td>Manager</td><td>75000.00</td></tr>
+                                 <tr><td>ADM002</td><td>Aryan</td><td>A.</td><td>Aradhye</td><td>8</td><td>Assistant Manager</td><td>65000.00</td></tr>
+                                 <tr><td>ADM003</td><td>Ankit</td><td>R.</td><td>Gupta</td><td>5</td><td>Supervisor</td><td>55000.00</td></tr>
+                                 <tr><td>ADM004</td><td>Neha</td><td>S.</td><td>Verma</td><td>6</td><td>HR</td><td>50000.00</td></tr>
+                                 <tr><td>ADM005</td><td>Vikram</td><td>D.</td><td>Singh</td><td>7</td><td>Operations Head</td><td>80000.00</td></tr>
+                                 <tr><td>ADM006</td><td>Kiran</td><td>P.</td><td>Yadav</td><td>4</td><td>Finance Head</td><td>72000.00</td></tr>
+                                 <tr><td>ADM007</td><td>Sunil</td><td>M.</td><td>Chopra</td><td>3</td><td>Technical Lead</td><td>68000.00</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="Shopping_WebsiteTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Website_ID</th><th>Website_Name</th><th>Website_URL</th><th>Admin_ID</th></tr></thead>
+                             <tbody>
+                                 <tr><td>WEB001</td><td>ShopEase</td><td>https://www.shopease com</td><td>ADM001</td></tr>
+                                 <tr><td>WEB002</td><td>QuickBuy</td><td>https://www.quickbuy com</td><td>ADM002</td></tr>
+                                 <tr><td>WEB003</td><td>MegaMart</td><td>https://www.megamart com</td><td>ADM003</td></tr>
+                                 <tr><td>WEB004</td><td>FastCart</td><td>https://www.fastcart com</td><td>ADM004</td></tr>
+                                 <tr><td>WEB005</td><td>DailyDeals</td><td>https://www.dailydeals com</td><td>ADM005</td></tr>
+                                 <tr><td>WEB006</td><td>BuyItNow</td><td>https://www.buyitnow com</td><td>ADM006</td></tr>
+                                 <tr><td>WEB007</td><td>ShopNow</td><td>https://www.shopnow com</td><td>ADM007</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="SupplierTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Supplier_ID</th><th>First_Name</th><th>Middle_Name</th><th>Last_Name</th><th>Category</th></tr></thead>
+                             <tbody>
+                                 <tr><td>SUP001</td><td>Atharva</td><td>G.</td><td>Zope</td><td>Electronics</td></tr>
+                                 <tr><td>SUP002</td><td>Sonia</td><td>R.</td><td>Kapoor</td><td>Clothing</td></tr>
+                                 <tr><td>SUP003</td><td>Vikas</td><td>M.</td><td>Jain</td><td>Furniture</td></tr>
+                                 <tr><td>SUP004</td><td>Amit</td><td>L.</td><td>Kumar</td><td>Grocery</td></tr>
+                                 <tr><td>SUP005</td><td>Pooja</td><td>S.</td><td>Sharma</td><td>Toys</td></tr>
+                                 <tr><td>SUP006</td><td>Dinesh</td><td>P.</td><td>Verma</td><td>Footwear</td></tr>
+                                 <tr><td>SUP007</td><td>Manisha</td><td>T.</td><td>Roy</td><td>Accessories</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="Supplier_AddressTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Supplier_ID</th><th>Address</th></tr></thead>
+                             <tbody>
+                                 <tr><td>SUP001</td><td>Mumbai, Maharashtra</td></tr>
+                                 <tr><td>SUP002</td><td>Delhi, India</td></tr>
+                                 <tr><td>SUP003</td><td>Bangalore, Karnataka</td></tr>
+                                 <tr><td>SUP004</td><td>Chennai, Tamil Nadu</td></tr>
+                                 <tr><td>SUP005</td><td>Kolkata, West Bengal</td></tr>
+                                 <tr><td>SUP006</td><td>Hyderabad, Telangana</td></tr>
+                                 <tr><td>SUP007</td><td>Pune, Maharashtra</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="Product_CategoryTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Category_ID</th><th>Category_Name</th><th>Average_Profit</th><th>Price_Range</th><th>Supplier_ID</th></tr></thead>
+                             <tbody>
+                                 <tr><td>CAT001</td><td>Mobile Phones</td><td>5000.00</td><td>5000-50000</td><td>SUP001</td></tr>
+                                 <tr><td>CAT002</td><td>Men Clothing</td><td>1500.00</td><td>500-5000</td><td>SUP002</td></tr>
+                                 <tr><td>CAT003</td><td>Sofas</td><td>8000.00</td><td>5000-40000</td><td>SUP003</td></tr>
+                                 <tr><td>CAT004</td><td>Daily Groceries</td><td>200.00</td><td>50-500</td><td>SUP004</td></tr>
+                                 <tr><td>CAT005</td><td>Kids Toys</td><td>1000.00</td><td>300-5000</td><td>SUP005</td></tr>
+                                 <tr><td>CAT006</td><td>Running Shoes</td><td>2000.00</td><td>1000-10000</td><td>SUP006</td></tr>
+                                 <tr><td>CAT007</td><td>Sunglasses</td><td>2500.00</td><td>1000-8000</td><td>SUP007</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="Category_Target_AudienceTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Category_ID</th><th>Target_Audience</th></tr></thead>
+                             <tbody>
+                                 <tr><td>CAT001</td><td>Rich</td></tr><tr><td>CAT001</td><td>Middle</td></tr><tr><td>CAT001</td><td>Poor</td></tr>
+                                 <tr><td>CAT002</td><td>Middle</td></tr><tr><td>CAT002</td><td>Poor</td></tr>
+                                 <tr><td>CAT003</td><td>Rich</td></tr><tr><td>CAT003</td><td>Middle</td></tr>
+                                 <tr><td>CAT004</td><td>Middle</td></tr><tr><td>CAT004</td><td>Poor</td></tr>
+                                 <tr><td>CAT005</td><td>Middle</td></tr><tr><td>CAT005</td><td>Poor</td></tr>
+                                 <tr><td>CAT006</td><td>Rich</td></tr><tr><td>CAT006</td><td>Middle</td></tr>
+                                 <tr><td>CAT007</td><td>Rich</td></tr><tr><td>CAT007</td><td>Middle</td></tr><tr><td>CAT007</td><td>Poor</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="ProductTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Product_ID</th><th>Product_Name</th><th>Product_Status</th><th>Rating</th><th>Stocking_Period</th><th>Sales</th><th>Category_ID</th></tr></thead>
+                             <tbody>
+                                 <tr><td>PROD001</td><td>iPhone 12</td><td>In Stock</td><td>4.5</td><td>30</td><td>100</td><td>CAT001</td></tr>
+                                 <tr><td>PROD002</td><td>Samsung Galaxy S21</td><td>In Stock</td><td>4.6</td><td>30</td><td>150</td><td>CAT001</td></tr>
+                                 <tr><td>PROD003</td><td>Levi's Jeans</td><td>In Stock</td><td>4.2</td><td>60</td><td>200</td><td>CAT002</td></tr>
+                                 <tr><td>PROD004</td><td>Wooden Sofa Set</td><td>Out of Stock</td><td>4.8</td><td>90</td><td>50</td><td>CAT003</td></tr>
+                                 <tr><td>PROD005</td><td>Organic Vegetables</td><td>In Stock</td><td>4.9</td><td>7</td><td>300</td><td>CAT004</td></tr>
+                                 <tr><td>PROD006</td><td>Lego Building Blocks</td><td>In Stock</td><td>4.7</td><td>15</td><td>120</td><td>CAT005</td></tr>
+                                 <tr><td>PROD007</td><td>Nike Running Shoes</td><td>In Stock</td><td>4.3</td><td>30</td><td>80</td><td>CAT006</td></tr>
+                                 <tr><td>PROD008</td><td>Ray-Ban Sunglasses</td><td>In Stock</td><td>4.4</td><td>60</td><td>110</td><td>CAT007</td></tr>
+                                 <tr><td>PROD009</td><td>Dell Inspiron</td><td>In Stock</td><td>4.7</td><td>45</td><td>90</td><td>CAT001</td></tr>
+                                 <tr><td>PROD010</td><td>Adidas T-shirt</td><td>Out of Stock</td><td>4.5</td><td>30</td><td>70</td><td>CAT002</td></tr>
+                                 <tr><td>PROD011</td><td>Dining Table Set</td><td>In Stock</td><td>4.8</td><td>80</td><td>40</td><td>CAT003</td></tr>
+                                 <tr><td>PROD012</td><td>Milk</td><td>In Stock</td><td>4.9</td><td>5</td><td>400</td><td>CAT004</td></tr>
+                                 <tr><td>PROD013</td><td>Barbie Doll</td><td>In Stock</td><td>4.7</td><td>10</td><td>150</td><td>CAT005</td></tr>
+                                 <tr><td>PROD014</td><td>Puma Running Shoes</td><td>In Stock</td><td>4.4</td><td>30</td><td>60</td><td>CAT006</td></tr>
+                                 <tr><td>PROD015</td><td>Fossil Watch</td><td>In Stock</td><td>4.6</td><td>60</td><td>100</td><td>CAT007</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="CartTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Cart_ID</th><th>Size</th><th>Quantity</th></tr></thead>
+                             <tbody>
+                                 <tr><td>CART001</td><td>Small</td><td>2</td></tr>
+                                 <tr><td>CART002</td><td>Medium</td><td>5</td></tr>
+                                 <tr><td>CART003</td><td>Large</td><td>1</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="ConsumerTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Consumer_ID</th><th>First_Name</th><th>Middle_Name</th><th>Last_Name</th><th>Type</th><th>House_No</th><th>Pincode</th><th>City</th><th>State</th></tr></thead>
+                             <tbody>
+                                 <tr><td>CON001</td><td>CHAUDHARI</td><td>SHREYASH</td><td>MANOJ</td><td>Normal</td><td>123</td><td>400001</td><td>Mumbai</td><td>Maharashtra</td></tr>
+                                 <tr><td>CON002</td><td>DAMEDHAR</td><td>ANIKET</td><td>SUNIRAO</td><td>Subscribed</td><td>456</td><td>110001</td><td>Delhi</td><td>Delhi</td></tr>
+                                 <tr><td>CON003</td><td>DHAME</td><td>VIJAY</td><td>DATTATRAY</td><td>Normal</td><td>789</td><td>560001</td><td>Bangalore</td><td>Karnataka</td></tr>
+                                 <tr><td>CON004</td><td>DIDWAGH</td><td>SUSHANT</td><td>VITHOBA</td><td>Subscribed</td><td>101</td><td>600001</td><td>Chennai</td><td>Tamil Nadu</td></tr>
+                                 <tr><td>CON005</td><td>PRITESH</td><td>PANDHARINATH</td><td>BAGUL</td><td>Normal</td><td>102</td><td>500001</td><td>Hyderabad</td><td>Telangana</td></tr>
+                                 <tr><td>CON006</td><td>PUJARI</td><td>DHRUV</td><td>SIDRAM</td><td>Subscribed</td><td>201</td><td>700001</td><td>Kolkata</td><td>West Bengal</td></tr>
+                                 <tr><td>CON007</td><td>PUPPALWAR</td><td>NIKHIL</td><td>DILIP</td><td>Normal</td><td>301</td><td>380001</td><td>Ahmedabad</td><td>Gujarat</td></tr>
+                                 <tr><td>CON008</td><td>SAKHARE</td><td>ATHARV</td><td>VIJAYKUMAR</td><td>Subscribed</td><td>1010</td><td>110003</td><td>Delhi</td><td>Delhi</td></tr>
+                                 <tr><td>CON009</td><td>SALVE</td><td>SHIVAM</td><td>PRASHANT</td><td>Normal</td><td>102</td><td>110004</td><td>Delhi</td><td>Delhi</td></tr>
+                                 <tr><td>CON010</td><td>SAROKTE</td><td>ISHWARI</td><td>KALU</td><td>Subscribed</td><td>103</td><td>110005</td><td>Mumbai</td><td>Maharashtra</td></tr>
+                                 <tr><td>CON011</td><td>SARTHAK</td><td>N</td><td>BAGDE</td><td>Normal</td><td>104</td><td>110006</td><td>Bangalore</td><td>Karnataka</td></tr>
+                                 <tr><td>CON012</td><td>SHEMBALE</td><td>YUVRAJ</td><td>BHAGWAN</td><td>Subscribed</td><td>105</td><td>110007</td><td>Chennai</td><td>Tamil Nadu</td></tr>
+                                 <tr><td>CON013</td><td>SHRUTI</td><td>SUNIL</td><td>DHUPAD</td><td>Normal</td><td>106</td><td>110008</td><td>Delhi</td><td>Delhi</td></tr>
+                                 <tr><td>CON014</td><td>SHUKLA</td><td>ISHWARI</td><td>VAIBHAV</td><td>Normal</td><td>107</td><td>110009</td><td>Hyderabad</td><td>Telangana</td></tr>
+                                 <tr><td>CON015</td><td>SONAWANE</td><td>ISHWAR</td><td>SUDAM</td><td>Subscribed</td><td>108</td><td>110010</td><td>Pune</td><td>Maharashtra</td></tr>
+                                 <tr><td>CON016</td><td>THAKARE</td><td>SUHANI</td><td>ANIL</td><td>Normal</td><td>109</td><td>110011</td><td>Kolkata</td><td>West Bengal</td></tr>
+                                 <tr><td>CON017</td><td>SHAH</td><td>MIHIK</td><td>SUJIT</td><td>Normal</td><td>110</td><td>110012</td><td>Ahmedabad</td><td>Gujarat</td></tr>
+                                 <tr><td>CON018</td><td>PATIL</td><td>SAKSHI</td><td>PRAVIN</td><td>Normal</td><td>111</td><td>110013</td><td>Mumbai</td><td>Maharashtra</td></tr>
+                                 <tr><td>CON019</td><td>PARKAR</td><td>TEJAS</td><td>YASHWANT</td><td>Subscribed</td><td>112</td><td>110014</td><td>Delhi</td><td>Delhi</td></tr>
+                                 <tr><td>CON020</td><td>NIHAR</td><td>JANARDAN</td><td>SALVI</td><td>Normal</td><td>113</td><td>110015</td><td>Bangalore</td><td>Karnataka</td></tr>
+                                 <tr><td>CON021</td><td>NEEL</td><td>YADNESH</td><td>KALYAN</td><td>Normal</td><td>114</td><td>110016</td><td>Chennai</td><td>Tamil Nadu</td></tr>
+                                 <tr><td>CON022</td><td>GHADGE</td><td>JANVEE</td><td>MAHENDRA</td><td>Subscribed</td><td>115</td><td>110017</td><td>Hyderabad</td><td>Telangana</td></tr>
+                                 <tr><td>CON023</td><td>DESAI</td><td>ATHARVA</td><td>ATUL</td><td>Normal</td><td>116</td><td>110018</td><td>Pune</td><td>Maharashtra</td></tr>
+                                 <tr><td>CON024</td><td>CHAND</td><td>ONKAR</td><td>VISHNU</td><td>Normal</td><td>117</td><td>110019</td><td>Kolkata</td><td>West Bengal</td></tr>
+                                 <tr><td>CON025</td><td>BORMALE</td><td>ABHAY</td><td>BHAGWAN</td><td>Subscribed</td><td>118</td><td>110020</td><td>Ahmedabad</td><td>Gujarat</td></tr>
+                                 <tr><td>CON026</td><td>BHAGAT</td><td>ADHYA</td><td>DNYANESHWAR</td><td>Normal</td><td>119</td><td>110021</td><td>Mumbai</td><td>Maharashtra</td></tr>
+                                 <tr><td>CON027</td><td>SURAJIWALE</td><td>SHIVANEE</td><td>NITIN</td><td>Normal</td><td>120</td><td>110022</td><td>Delhi</td><td>Delhi</td></tr>
+                                 <tr><td>CON028</td><td>SARPHALE</td><td>SIDDHESH</td><td>DHONDURAM</td><td>Subscribed</td><td>121</td><td>110023</td><td>Bangalore</td><td>Karnataka</td></tr>
+                                 <tr><td>CON029</td><td>VENDE</td><td>HIRAL</td><td>BHASKAR</td><td>Normal</td><td>122</td><td>110024</td><td>Chennai</td><td>Tamil Nadu</td></tr>
+                                 <tr><td>CON030</td><td>VALVI</td><td>KESHAV</td><td>VISHNU</td><td>Normal</td><td>123</td><td>110025</td><td>Hyderabad</td><td>Telangana</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="Consumer_ContactTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Consumer_ID</th><th>Contact_No</th></tr></thead>
+                             <tbody>
+                                 <tr><td>CON001</td><td>9876543210</td></tr><tr><td>CON001</td><td>9123456780</td></tr>
+                                 <tr><td>CON002</td><td>8765432109</td></tr><tr><td>CON002</td><td>9988776655</td></tr>
+                                 <tr><td>CON003</td><td>7654321098</td></tr><tr><td>CON004</td><td>6543210987</td></tr>
+                                 <tr><td>CON005</td><td>5432109876</td></tr><tr><td>CON006</td><td>9123456781</td></tr>
+                                 <tr><td>CON007</td><td>9988776656</td></tr><tr><td>CON008</td><td>9001234567</td></tr>
+                                 <tr><td>CON009</td><td>9998765432</td></tr><tr><td>CON010</td><td>9876543211</td></tr>
+                                 <tr><td>CON011</td><td>8765432108</td></tr><tr><td>CON012</td><td>8654321097</td></tr>
+                                 <tr><td>CON013</td><td>8001234567</td></tr><tr><td>CON014</td><td>7008765432</td></tr>
+                                 <tr><td>CON015</td><td>9887654321</td></tr><tr><td>CON016</td><td>8776543210</td></tr>
+                                 <tr><td>CON017</td><td>9006543210</td></tr><tr><td>CON018</td><td>9123456782</td></tr>
+                                 <tr><td>CON019</td><td>9997654321</td></tr><tr><td>CON020</td><td>8765432107</td></tr>
+                                 <tr><td>CON21</td><td>7654321096</td></tr><tr><td>CON022</td><td>8765432106</td></tr>
+                                 <tr><td>CON023</td><td>9001234568</td></tr><tr><td>CON024</td><td>9998765433</td></tr>
+                                 <tr><td>CON025</td><td>9887654322</td></tr><tr><td>CON026</td><td>8002345678</td></tr>
+                                 <tr><td>CON027</td><td>7001234567</td></tr><tr><td>CON028</td><td>9996543211</td></tr>
+                                 <tr><td>CON029</td><td>9008765432</td></tr><tr><td>CON030</td><td>8776543211</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="OrdersTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Order_No</th><th>Consumer_ID</th><th>Order_Date</th><th>Amount</th><th>Order_Status</th></tr></thead>
+                             <tbody>
+                                 <tr><td>ORD001</td><td>CON001</td><td>2025-02-28</td><td>15000.00</td><td>Shipped</td></tr>
+                                 <tr><td>ORD002</td><td>CON002</td><td>2025-02-27</td><td>5000.00</td><td>Delivered</td></tr>
+                                 <tr><td>ORD003</td><td>CON003</td><td>2025-02-26</td><td>3000.00</td><td>Pending</td></tr>
+                                 <tr><td>ORD004</td><td>CON004</td><td>2025-02-25</td><td>12000.00</td><td>Cancelled</td></tr>
+                                 <tr><td>ORD005</td><td>CON005</td><td>2025-02-24</td><td>8000.00</td><td>Delivered</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="Order_DetailsTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Order_No</th><th>Product_ID</th><th>Quantity</th><th>Price</th></tr></thead>
+                             <tbody>
+                                 <tr><td>ORD001</td><td>PROD001</td><td>1</td><td>70000.00</td></tr>
+                                 <tr><td>ORD001</td><td>PROD002</td><td>2</td><td>50000.00</td></tr>
+                                 <tr><td>ORD002</td><td>PROD005</td><td>3</td><td>300.00</td></tr>
+                                 <tr><td>ORD003</td><td>PROD007</td><td>1</td><td>2000.00</td></tr>
+                                 <tr><td>ORD004</td><td>PROD004</td><td>1</td><td>40000.00</td></tr>
+                                 <tr><td>ORD005</td><td>PROD008</td><td>2</td><td>5000.00</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="Tracking_DetailsTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Tracking_ID</th><th>Order_No</th><th>Status</th><th>Last_Update</th></tr></thead>
+                             <tbody>
+                                 <tr><td>TRACK001</td><td>ORD001</td><td>Shipped</td><td>2025-03-02</td></tr>
+                                 <tr><td>TRACK002</td><td>ORD002</td><td>Out For Delivery</td><td>2025-03-02</td></tr>
+                                 <tr><td>TRACK003</td><td>ORD003</td><td>Delivered</td><td>2025-03-01</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+
+                     <div id="PaymentTable" class="pre-rendered-table" style="display: none;">
+                         <table>
+                             <thead><tr><th>Payment_ID</th><th>Order_No</th><th>Payment_Method</th><th>Payment_Status</th><th>Payment_Date</th></tr></thead>
+                             <tbody>
+                                 <tr><td>PAY001</td><td>ORD001</td><td>Credit Card</td><td>Successful</td><td>2025-02-28</td></tr>
+                                 <tr><td>PAY002</td><td>ORD002</td><td>UPI</td><td>Successful</td><td>2025-02-27</td></tr>
+                                 <tr><td>PAY003</td><td>ORD003</td><td>Debit Card</td><td>Pending</td><td></td></tr>
+                                 <tr><td>PAY004</td><td>ORD004</td><td>Net Banking</td><td>Failed</td><td>2025-02-25</td></tr>
+                                 <tr><td>PAY005</td><td>PAY005</td><td>COD</td><td>Successful</td><td>2025-02-24</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p class="designed-by"><b>DESIGNED BY</b></p>
+        <p class="author"><b>ATHARVA ZOPE</b></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
